@@ -1,0 +1,24 @@
+{
+  "name": "excel",
+  "version": "1.0.0",
+  "description": "Native JS Excel",
+  "main": "webpack.config.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KarKaron/js-excel.git"
+  },
+  "keywords": [
+    "js",
+    "javascript",
+    "excel"
+  ],
+  "author": "Anton Karkotski <karkotski@gmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/KarKaron/js-excel/issues"
+  },
+  "homepage": "https://github.com/KarKaron/js-excel#readme"
+}
