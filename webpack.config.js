@@ -3,7 +3,7 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const loader = require('sass-loader');
+// const loaderCSS = require('sass-loader');
 
 const isProd = process.env.NODE_ENV === 'production'
 const isDev = !isProd
@@ -13,7 +13,7 @@ const filename = ext => isDev ? `bundle.${ext}` : `bundle.[hash].${ext}`
 const jsLoaders = () => {
   const loaders = [
     {
-      loader: "babel-loader",
+      loader: 'babel-loader',
       options: {
         presets: ['@babel/preset-env']
       }
@@ -21,9 +21,9 @@ const jsLoaders = () => {
   ]
 
   if (isDev) {
-    loader.push('eslint-loader')
+    loaders.push('eslint-loader')
   }
-} 
+}
 
 module.exports = {
   context: path.resolve(__dirname, 'src'),
@@ -56,9 +56,9 @@ module.exports = {
     }),
     new CopyPlugin({
       patterns: [
-        { 
-          from: path.resolve(__dirname, 'src/favicon.ico'), 
-          to: path.resolve(__dirname, 'dist') 
+        {
+          from: path.resolve(__dirname, 'src/favicon.ico'),
+          to: path.resolve(__dirname, 'dist')
         }
       ]
     }),
@@ -72,8 +72,8 @@ module.exports = {
         test: /\.s[ac]ss$/i,
         use: [
           MiniCssExtractPlugin.loader,
-          "css-loader",
-          "sass-loader",
+          'css-loader',
+          'sass-loader',
         ],
       },
       {
