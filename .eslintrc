@@ -14,7 +14,8 @@
     "object-curly-spacing": "off",
     "eol-last": "off",
     "no-trailing-spaces": "off",
-    "operator-linebreak": "off"
+    "operator-linebreak": "off",
+    "one-var": "off"
   },
   "extends": ["eslint:recommended", "google"]
 }
