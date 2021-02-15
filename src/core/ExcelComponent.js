@@ -2,20 +2,24 @@ import {DomListener} from '@core/DomListener';
 
 export class ExcelComponent extends DomListener {
   constructor($root, options = {}) {
-    super($root, options.listeners)
-    this.name = options.name
+    super($root, options.listeners);
+    this.name = options.name;
+    // Универсальный метод подготовки до реализации шаблона
+    this.prepare();
   }
+
+  prepare() {}
 
   // Возвращает шаблон компонента
   toHTML() {
-    return ''
+    return '';
   }
 
   init() {
-    this.initDOMListeners()
+    this.initDOMListeners();
   }
 
   destroy() {
-    this.removeDOMListeners()
+    this.removeDOMListeners();
   }
 }
