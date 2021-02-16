@@ -70,13 +70,24 @@ class Dom {
     return this.$el.classList.remove(className);
   }
 
-
   css(styles ={}) {
     Object
         .keys(styles)
         .forEach( key => {
           this.$el.style[key] = styles[key];
         });
+  }
+
+  id(parse) {
+    if (parse) {
+      const parsed = this.id().split(':');
+      return {
+        row: +parsed[0],
+        col: +parsed[1]
+      }
+    }
+
+    return this.data.id;
   }
 }
 

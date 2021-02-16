@@ -3,8 +3,7 @@ import {$} from '@/core/dom';
 import {TableSelection} from '@/components/table/TableSelection';
 import {createTable} from '@/components/table/table.template';
 import {resizeHandler} from '@/components/table/table.resize';
-import {shouldResize} from '@/components/table/table.functions';
-import {isCell} from '@/components/table/table.functions';
+import {shouldResize, isCell, matrix} from '@/components/table/table.functions';
 
 export class Table extends ExcelComponent {
   static className = 'excel__table';
@@ -40,8 +39,12 @@ export class Table extends ExcelComponent {
       resizeHandler(this.$root, event);
     } else if (isCell(event)) {
       const $target = $(event.target);
-      if (event.ctrlKey) {
-        console.log($target.data.id);
+      if (event.shiftKey) { // event.ctrlKey и т.д.
+        const target = $target.id(true),
+          current = this.selection.current.id(true),
+          $cells = matrix(target, current)
+              .map(id => this.$root.find(`[data-id="${id}"]`));
+        this.selection.selectGroup($cells);
       } else {
         this.selection.select($target);
       }
