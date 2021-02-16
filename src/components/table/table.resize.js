@@ -5,12 +5,14 @@ export function resizeHandler($root, event) {
     $parent = $resizer.parent('[data-type="resize"]'),
     cords = $parent.getCords(),
     type = $resizer.data.resize,
-    sideProp = type === 'col' ? 'bottom' : 'right';
+    sideProp = type === 'row' ? 'bottom' : 'right',
+    sideProp1 = type === 'col' ? 'bottom' : 'right';
   let value;  
 
   $resizer.css({
     opacity: 1,
-    [sideProp]: '-5000px'
+    [sideProp]: '-5000px',
+    [sideProp1]: '-5000px'
   });
 
   document.onmousemove = e => {
@@ -39,7 +41,8 @@ export function resizeHandler($root, event) {
 
     $resizer.css({
       opacity: 0,
-      right: 0
+      [sideProp]: 0,
+      [sideProp1]: 0
     });
   }
 }
