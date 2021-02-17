@@ -13,10 +13,11 @@ import {
 export class Table extends ExcelComponent {
   static className = 'excel__table';
 
-  constructor($root) {
+  constructor($root, options) {
     super($root, {
       name: 'Table',
-      listeners: ['mousedown', 'keydown']
+      listeners: ['mousedown', 'keydown', 'input'],
+      ...options
     });
   }
 
@@ -30,8 +31,25 @@ export class Table extends ExcelComponent {
 
   init() {
     super.init();
-    const cell = this.$root.find('[data-id="0:0"]')
-    this.selection.select(cell);
+
+    this.selectCell(this.$root.find('[data-id="0:0"]'));
+
+    this.$on('formula:input', text => {
+      this.selection.current.text(text);
+    });
+
+    this.$on('formula:done', () => {
+      this.selection.current.focus();
+    });
+  }
+
+  selectCell($cell) {
+    this.selection.select($cell);
+    this.$emit('table:select', $cell);
+  }
+
+  onInput(event) {
+    this.$emit('table:input', $(event.target));
   }
 
   onMousedown(event) {
@@ -39,7 +57,7 @@ export class Table extends ExcelComponent {
       resizeHandler(this.$root, event);
     } else if (isCell(event)) {
       const $target = $(event.target);
-      if (event.shiftKey) { // event.ctrlKey и т.д.
+      if (event.shiftKey) { // event.ctrlKey
         const target = $target.id(true),
           current = this.selection.current.id(true),
           $cells = matrix(target, current)
@@ -66,7 +84,7 @@ export class Table extends ExcelComponent {
       event.preventDefault();
       const id = this.selection.current.id(true),
         $next = this.$root.find(nextSelector(key, id));
-      this.selection.select($next)
+      this.selectCell($next);
     }
   }
 }
