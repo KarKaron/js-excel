@@ -1,13 +1,14 @@
 class Dom {
   constructor(selector) {
     // #app
-    this.$el = typeof selector === 'string'
-    ? document.querySelector(selector)
-    : selector
+    this.$el =
+      typeof selector === "string"
+        ? document.querySelector(selector)
+        : selector;
   }
 
   html(html) {
-    if (typeof html === 'string') {
+    if (typeof html === "string") {
       this.$el.innerHTML = html;
       return this;
     }
@@ -16,19 +17,19 @@ class Dom {
   }
 
   text(text) {
-    if (typeof text === 'string') {
+    if (typeof text !== "undefined") {
       this.$el.textContent = text;
       return this;
     }
-    
-    if (this.$el.tagName.toLowerCase() === 'input') {
+
+    if (this.$el.tagName.toLowerCase() === "input") {
       return this.$el.value.trim();
     }
     return this.$el.textContent.trim();
   }
 
   clear() {
-    this.html('');
+    this.html("");
     return this;
   }
 
@@ -39,7 +40,7 @@ class Dom {
   off(eventType, callback) {
     this.$el.removeEventListener(eventType, callback);
   }
-  
+
   append(node) {
     if (node instanceof Dom) {
       node = node.$el;
@@ -84,21 +85,26 @@ class Dom {
     return this;
   }
 
-  css(styles ={}) {
-    Object
-        .keys(styles)
-        .forEach( key => {
-          this.$el.style[key] = styles[key];
-        });
+  css(styles = {}) {
+    Object.keys(styles).forEach((key) => {
+      this.$el.style[key] = styles[key];
+    });
+  }
+
+  getStyles(styles = []) {
+    return styles.reduce((res, s) => {
+      res[s] = this.$el.style[s];
+      return res;
+    }, {});
   }
 
   id(parse) {
     if (parse) {
-      const parsed = this.id().split(':');
+      const parsed = this.id().split(":");
       return {
         row: +parsed[0],
-        col: +parsed[1]
-      }
+        col: +parsed[1],
+      };
     }
 
     return this.data.id;
@@ -108,16 +114,24 @@ class Dom {
     this.$el.focus();
     return this;
   }
+
+  attr(name, value) {
+    if (value) {
+      this.$el.setAttribute(name, value);
+      return this;
+    }
+    return this.$el.getAttribute(name);
+  }
 }
 
 export function $(selector) {
   return new Dom(selector);
 }
 
-$.create = (tagName, classes = '') => {
+$.create = (tagName, classes = "") => {
   const el = document.createElement(tagName);
   if (classes) {
     el.classList.add(classes);
   }
   return $(el);
-}
+};
