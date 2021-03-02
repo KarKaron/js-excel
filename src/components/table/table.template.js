@@ -1,11 +1,31 @@
+import { parse } from "@/core/parse";
+import { toInlineStyles } from "@/core/utils";
+import { defaultStyles } from "@/constants";
+
 // Коды букв
 const CODES = {
-  A: 65,
-  Z: 90
-}
+    A: 65,
+    Z: 90,
+  },
+  DEFAULT_WIDTH = 120,
+  DEFAULT_HEIGHT = 24;
 
-function toCell(row) {
+function getWidth(state, index) {
+  return (state[index] || DEFAULT_WIDTH) + "px";
+} 
+function getHeight(state, index) {
+  return (state[index] || DEFAULT_HEIGHT) + "px";
+} 
+    
+function toCell(state, row) {
   return function(_, col) {
+    const id = `${row}:${col}`,
+      width = getWidth(state.colState, col),
+      data = state.dataState[id],
+      styles = toInlineStyles({
+        ...defaultStyles,
+        ...state.stylesState[id]
+      });
     return `
       <div
         class="cell"
@@ -14,18 +34,22 @@ function toCell(row) {
         data-col="${col}"
         data-type="cell"
         data-id="${row}:${col}"
+        data-value="${data || ""}"
+        style="${styles}; width: ${width};"
       >
+        ${parse(data) || ""}
       </div>
     `;
-  }
+  };
 }
 
-function toColumn(col, index) {
+function toColumn({ col, index, width }) {
   return `
     <div
       class="column" 
       data-type="resize" 
       data-col="${index}"
+      style="width: ${width}"
     >
       ${col}
       <div
@@ -36,22 +60,20 @@ function toColumn(col, index) {
   `;
 }
 
-function createRow(index, content) {
-  const resize = index
-  ? `<div 
-      class="row-resize" 
-      data-resize="row"
-      ></div>
-    ` 
-  : '';
-
+function createRow(index, content, state) {
+  const height = getHeight(state, index);
+  const resize = index 
+  ? `<div class="row-resize" data-resize="row"></div>` 
+  : "";
   return `
     <div 
       class="row" 
       data-type="resize"
+      data-row="${index}"
+      style="height: ${height}"
     >
       <div class="row-info">
-        ${index ? index : ''}
+        ${index ? index : ""}
         ${resize}
       </div>
       <div class="row-data">
@@ -65,23 +87,30 @@ function toChar(_, index) {
   return String.fromCharCode(CODES.A + index);
 }
 
-export function createTable(rowsCount = 15) {
+function withWidthFrom(state) {
+  return function(col, index) {
+    return { col, index, width: getWidth(state, index) };
+  };
+}
+
+export function createTable(rowsCount = 15, state = {}) {
   const colsCount = CODES.Z - CODES.A + 1,
     rows = [],
     cols = new Array(colsCount)
-        .fill('')
+        .fill("")
         .map(toChar)
+        .map(withWidthFrom(state.colState))
         .map(toColumn)
-        .join('');
-  rows.push(createRow(null, cols));
+        .join("");
+  rows.push(createRow(null, cols, {}));
 
-  for (let row =0; row < rowsCount; row++) {
+  for (let row = 0; row < rowsCount; row++) {
     const cells = new Array(colsCount)
-        .fill('')
-        .map(toCell(row))
-        .join('');
-    rows.push(createRow(row + 1, cells));
+        .fill("")
+        .map(toCell(state, row))
+        .join("");
+    rows.push(createRow(row + 1, cells, state.rowState));
   }
 
-  return rows.join('');
+  return rows.join("");
 }

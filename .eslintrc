@@ -15,7 +15,8 @@
     "eol-last": "off",
     "no-trailing-spaces": "off",
     "operator-linebreak": "off",
-    "one-var": "off"
+    "one-var": "off",
+    "quotes": ["error", "double", { "allowTemplateLiterals": true }]
   },
   "extends": ["eslint:recommended", "google"]
 }
